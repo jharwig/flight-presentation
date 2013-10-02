@@ -1,0 +1,14 @@
+{
+  "name": "flight-presentation",
+  "version": "0.0.0",
+  "dependencies": {
+    "flight": "~1.1.0",
+    "requirejs": "~2.1.5",
+    "bootstrap": "~3.0.0",
+    "less.js": "~1.4.2"
+  },
+  "devDependencies": {
+    "jasmine-flight": "*",
+    "jasmine-jquery": "*"
+  }
+}
