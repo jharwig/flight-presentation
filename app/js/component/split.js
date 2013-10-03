@@ -9,7 +9,7 @@ define(function (require) {
   var defineComponent = require('flight/lib/component');
   var template = require('tpl!./split');
   var SlidesList = require('component/slides_list');
-  var SlideEditor = require('component/slide_editor');
+  var SlideEditor = require('component/slide_editor/slide_editor');
 
   /**
    * Module exports
