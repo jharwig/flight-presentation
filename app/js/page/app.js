@@ -6,7 +6,7 @@ define(function (require) {
    * Module dependencies
    */
 
-  // var myComponent = require('component/my_component');
+  var Split = require('component/split');
 
   /**
    * Module exports
@@ -19,7 +19,7 @@ define(function (require) {
    */
 
   function initialize() {
-    // myComponent.attachTo(document);
+      Split.attachTo(document.body);
   }
 
 });

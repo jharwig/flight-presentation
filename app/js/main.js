@@ -5,7 +5,10 @@ requirejs.config({
   paths: {
     'flight': 'bower_components/flight',
     'component': 'js/component',
-    'page': 'js/page'
+    'page': 'js/page',
+    'text': 'bower_components/requirejs-text/text',
+    'hogan': 'bower_components/requirejs-hogan-plugin/hogan',
+    'tpl': 'bower_components/requirejs-hogan-plugin/hgn'
   }
 });
 
