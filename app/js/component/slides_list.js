@@ -1,32 +1,31 @@
 define(function (require) {
 
-  'use strict';
+    'use strict';
 
-  /**
-   * Module dependencies
-   */
+    /**
+     * Module dependencies
+     */
 
-  var defineComponent = require('flight/lib/component');
+    var defineComponent = require('flight/lib/component');
 
-  /**
-   * Module exports
-   */
+    /**
+     * Module exports
+     */
 
-  return defineComponent(slidesList);
+    return defineComponent(SlidesList);
 
-  /**
-   * Module function
-   */
+    /**
+     * Module function
+     */
 
-  function slidesList() {
-    this.defaultAttrs({
+    function SlidesList() {
+        this.defaultAttrs({
 
-    });
+        });
 
-    this.after('initialize', function () {
-        this.$node.html('List');
-
-    });
-  }
+        this.after('initialize', function () {
+            this.$node.html('List');
+        });
+    }
 
 });

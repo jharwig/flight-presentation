@@ -1,42 +1,47 @@
 define(function (require) {
 
-  'use strict';
+    'use strict';
 
-  /**
-   * Module dependencies
-   */
+    /**
+     * Module dependencies
+     */
 
-  var defineComponent = require('flight/lib/component');
-  var template = require('tpl!./split');
-  var SlidesList = require('component/slides_list');
-  var SlideEditor = require('component/slide_editor/slide_editor');
+    var defineComponent = require('flight/lib/component');
 
-  /**
-   * Module exports
-   */
+    /**
+     * Module exports
+     */
 
-  return defineComponent(split);
+    Split.LAYOUTS = {
+        HORIZONTAL: 'h',
+        VERTICAL: 'v' 
+    };
 
-  /**
-   * Module function
-   */
+    return defineComponent(Split);
 
-  function split() {
-    this.defaultAttrs({
-        slidesListSelector: '.slides-list',
-        slideEditorSelector: '.slide-editor'
-    });
+    /**
+     * Module function
+     */
 
-    this.after('initialize', function () {
-        this.$node.html(template());
+    function Split() {
 
-        SlidesList.attachTo(this.select('slidesListSelector'));
-        SlideEditor.attachTo(this.select('slideEditorSelector'));
+        this.defaultAttrs({
+            layout: Split.LAYOUTS.HORIZONTAL
+        });
 
+        this.after('initialize', function () {
+            if (this.attr.layout !== Split.LAYOUTS.HORIZONTAL) {
+                throw "Layout not supported";
+            }
 
+            if (!this.attr.Pane1 || !this.attr.Pane2) {
+                throw "pane1Selector and pane2Selector are required";
+            }
 
+            this.attr.Pane1.attachTo($('<div class="split-1">').appendTo(this.$node));
+            this.attr.Pane2.attachTo($('<div class="split-2">').appendTo(this.$node));
 
-    });
-  }
-
+            this.$node.addClass('layout-' + this.attr.layout);
+        });
+    }
 });

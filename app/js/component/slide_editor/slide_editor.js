@@ -1,56 +1,58 @@
 define(function (require) {
 
-  'use strict';
+    'use strict';
 
-  /**
-   * Module dependencies
-   */
+    /**
+     * Module dependencies
+     */
 
-  var defineComponent = require('flight/lib/component');
-  var template = require('tpl!./slide_editor');
-  var SlideEditorToolbar = require('./slide_editor_toolbar');
-  var TextElement = require('./elements/text');
+    var defineComponent = require('flight/lib/component');
+    var template = require('tpl!./slide_editor');
+    var SlideEditorToolbar = require('./slide_editor_toolbar');
+    var TextElement = require('./elements/text');
 
-  /**
-   * Module exports
-   */
+    /**
+     * Module exports
+     */
 
-  return defineComponent(slideEditor);
+    return defineComponent(SlideEditor);
 
-  /**
-   * Module function
-   */
+    /**
+     * Module function
+     */
 
-  function slideEditor() {
-    this.defaultAttrs({
-        toolbarSelector: '.btn-toolbar',
-        contentSelector: '.content'
-    });
+    function SlideEditor() {
+        this.defaultAttrs({
+            toolbarSelector: '.btn-toolbar',
+            contentSelector: '.content',
+            allowEditing: true
+        });
 
-    this.after('initialize', function () {
-        this.$node.html(template());
+        this.after('initialize', function () {
+            this.$node.html(template());
 
-        SlideEditorToolbar.attachTo(this.select('toolbarSelector'));
+            if (this.attr.allowEditing) {
+                SlideEditorToolbar.attachTo(this.select('toolbarSelector'));
+                this.on('click', this.onClick);
+            }
+        });
 
-        this.on('click', this.onClick);
-    });
+        this.onClick = function(event) {
+            var content = this.select('contentSelector');
 
-    this.onClick = function(event) {
-        var content = this.select('contentSelector');
+            console.log(event.fromElement, event.toElement);
 
-        console.log(event.fromElement, event.toElement);
-
-        if ($(event.target).is(content)) {
-            TextElement.attachTo(
-                $('<div class="element"/>')
+            if ($(event.target).is(content)) {
+                TextElement.attachTo(
+                    $('<div class="element"/>')
                     .css({
                         left: event.offsetX,
                         top: event.offsetY
                     })
                     .appendTo(this.select('contentSelector'))
-            );
-        }
-    };
-  }
+                );
+            }
+        };
+    }
 
 });

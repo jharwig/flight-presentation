@@ -1,25 +1,34 @@
 define(function (require) {
 
-  'use strict';
+    'use strict';
 
-  /**
-   * Module dependencies
-   */
+    /**
+     * Module dependencies
+     */
 
-  var Split = require('component/split');
+    var Split = require('component/split');
+    var template = require('tpl!./app');
+    var SlidesList = require('component/slides_list');
+    var SlideEditor = require('component/slide_editor/slide_editor');
 
-  /**
-   * Module exports
-   */
+    /**
+     * Module exports
+     */
 
-  return initialize;
+    return initialize;
 
-  /**
-   * Module function
-   */
+    /**
+     * Module function
+     */
 
-  function initialize() {
-      Split.attachTo(document.body);
-  }
+    function initialize() {
+
+        $(document.body).append(template);
+
+        Split.attachTo($('.split'), {
+            Pane1: SlidesList,
+            Pane2: SlideEditor
+        });
+    }
 
 });

@@ -2,6 +2,7 @@
 
 requirejs.config({
   baseUrl: '',
+  urlArgs: "bust=" + (new Date()).getTime(), 
   paths: {
     'flight': 'bower_components/flight',
     'component': 'js/component',
