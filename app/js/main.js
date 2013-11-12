@@ -5,6 +5,7 @@ requirejs.config({
   urlArgs: "bust=" + (new Date()).getTime(), 
   paths: {
     'flight': 'bower_components/flight',
+    'flight-storage': 'bower_components/flight-storage/lib',
     'component': 'js/component',
     'page': 'js/page',
     'text': 'bower_components/requirejs-text/text',
@@ -31,6 +32,7 @@ require(
 
     debug.enable(true);
     DEBUG.events.logByAction('trigger');
+    //DEBUG.events.logAll();
 
     require(['page/app'], function(initializeApp) {
       initializeApp();

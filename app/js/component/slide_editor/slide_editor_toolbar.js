@@ -21,12 +21,26 @@ define(function (require) {
 
     function editorToolbar() {
         this.defaultAttrs({
-
+            toolSelector: '.tools'
         });
 
         this.after('initialize', function () {
             this.$node.html(template());
+
+            this.on('click', {
+                toolSelector: this.onToolClick
+            })
         });
+
+        this.onToolClick = function(event) {
+            var $target = $(event.target),
+                button = $target.closest('button'),
+                toolName = button.data('tool');
+
+            if (toolName) {
+                this.trigger('changeTool', { tool:toolName });
+            }
+        }
     }
 
 });

@@ -38,8 +38,8 @@ define(function (require) {
                 throw "pane1Selector and pane2Selector are required";
             }
 
-            this.attr.Pane1.attachTo($('<div class="split-1">').appendTo(this.$node));
-            this.attr.Pane2.attachTo($('<div class="split-2">').appendTo(this.$node));
+            this.attr.Pane1.attachTo($('<div class="split-1">').appendTo(this.$node), this.attr.pane1Options);
+            this.attr.Pane2.attachTo($('<div class="split-2">').appendTo(this.$node), this.attr.pane2Options);
 
             this.$node.addClass('layout-' + this.attr.layout);
         });

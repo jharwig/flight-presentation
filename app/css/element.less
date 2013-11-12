@@ -1,8 +1,20 @@
 
 .element {
-  border: 1px solid black;
+  border: 1px solid transparent;
   position: absolute;
   min-width: 50px;
   min-height: 1em;
   padding: 2px;
+
+  &:focus, &:hover {
+    border-color: black;
+  }
+}
+
+.viewing .element {
+  cursor: default;
+  &:focus, &:hover {
+    cursor: default;
+    border-color: transparent;
+  }
 }

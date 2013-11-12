@@ -5,6 +5,10 @@ ol {
 }
 li {
     list-style: none;
+
+    &.active .content {
+      background: rgba(0,109,158,0.4);
+    }
 }
 .content {
     position: relative;
@@ -12,7 +16,6 @@ li {
     left: auto;
     right: auto;
     bottom: auto;
-    background: red;
     -webkit-transform-origin: left top;
     overflow: hidden;
 }

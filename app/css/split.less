@@ -1,15 +1,17 @@
+@percent: 20%;
+
 .split-1 {
     position: absolute;
-    width: 13%; height: 100%;
+    width: @percent; height: 100%;
     top: 0; left: 0; bottom: 0;
 }
 .split-2 {
     position: absolute;
     width: auto; 
-    top: 0; left: 13%; right: 0; bottom: 0;
+    top: 0; left: @percent; right: 0; bottom: 0;
+    background: #efefef;
 
     border-left: 1px solid #ccc;
 
     padding: 1em;
-
 }

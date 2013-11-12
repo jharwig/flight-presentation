@@ -31,17 +31,17 @@ define(function (require) {
         this.after('initialize', function () {
             this.$node.addClass('slide-editor').html(template());
 
-            this.setSlide(this.attr.slide);
             this.on('click', {
                 noSlideSelector: this.createSlide
             });
             this.on('slideUpdated', this.onSlideUpdated);
-            this.on('setSlide', this.setSlide);
+            this.on('setSlide', this.onSetSlide);
             this.on('elementUpdated', this.onElementUpdated);
             this.on('updateElement', this.onUpdateElement);
-            this.on(document, 'selectSlide', this.onSelectSlide);
+            this.on('changeTool', this.onChangeTool);
 
             if (this.attr.allowEditing) {
+                this.on(document, 'selectSlide', this.onSelectSlide);
                 this.on(window, 'resize', _.debounce(this.onResize.bind(this), 250));
                 SlideEditorToolbar.attachTo(this.select('toolbarSelector'));
                 this.on('click', {
@@ -49,11 +49,15 @@ define(function (require) {
                 });
                 _.defer(this.onResize.bind(this));
             }
+
+            this.setSlide(this.attr.slide);
         });
 
         this.setSlide = function(slide) {
             this.attr.slide = slide;
             this.$node.toggleClass('no-slide', !slide);
+            this.select('contentSelector').empty();
+            this.updateElements();
         };
 
         this.onResize = function(event) {
@@ -79,10 +83,16 @@ define(function (require) {
         };
 
         this.onSlideUpdated = function(event, data) {
+            this.attr.slide = data.slide;
+            this.updateElements();
+        };
+
+        this.updateElements = function() {
             var self = this,
                 slide = this.attr.slide;
-            Object.keys(data.slide.elements).forEach(function(elementKey) {
-                self.trigger('elementUpdated', { element: data.slide.elements[elementKey] });
+
+            Object.keys(slide.elements || []).forEach(function(elementKey) {
+                self.trigger('elementUpdated', { element: slide.elements[elementKey] });
             });
         };
 
@@ -91,15 +101,11 @@ define(function (require) {
                 element = data.element,
                 elementNode = this.$node.find('.' + element.id);
 
-            console.log('finding', element.id, elementNode.length)
 
             if (elementNode.length) { 
                 this.trigger(elementNode, 'elementUpdated', data);
             } else {
-                console.log('element', element); 
                 require(['component/slide_editor/elements/' + element.elementType], function(Element) {
-
-                    console.log(element.position)
 
                     var node = $('<div class="element"/>')
                         .css({
@@ -121,12 +127,20 @@ define(function (require) {
             this.setSlide(data.slide);
         };
 
+        this.onChangeTool = function(event, data) {
+            this.currentTool = data.tool;
+        };
+
         this.createSlide = function(event) {
             this.trigger('createSlide');
         };
 
         this.addElement = function(event) {
             var content = this.select('contentSelector');
+
+            if (!this.currentTool) {
+                return;
+            }
 
             if ($(event.target).is(content)) {
                 var parent = this.$node,
@@ -135,15 +149,17 @@ define(function (require) {
 
                 this.trigger('elementUpdated', { 
                     element: {
-                        elementType:'text',
+                        elementType: this.currentTool,
                         position: {
                             x: event.offsetX / parentWidth,
                             y: event.offsetY / parentHeight
-                        }
+                        },
+                        editing: true
                     }
                 });
 
                 this.onResize();
+                this.currentTool = null;
             }
         };
     }

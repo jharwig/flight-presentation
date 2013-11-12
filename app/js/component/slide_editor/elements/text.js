@@ -34,10 +34,14 @@ define(function (require) {
             var field = this.select('editableSelector')
                 .attr('disabled', true)
                 .html(this.attr.element.value)
-                .on('change keydown', this.onChange.bind(this));
+                .on('change keydown keyup', this.onChange.bind(this));
                 
             if (this.attr.allowEditing) {
-                field.attr('disabled', false).focus();
+                field.attr('disabled', false);
+            }
+            if (this.attr.element.editing) {
+                field.focus();
+                this.attr.element.editing = false;
             }
         });
 
@@ -56,7 +60,6 @@ define(function (require) {
         this.onChange = function(event) {
             var sendChangeEvent = true;
 
-            console.log(event.metaKey, event.type, event.which);
             if (event.type === 'keydown' && event.metaKey) {
                 var handled = true;
                 sendChangeEvent = false;
@@ -65,6 +68,7 @@ define(function (require) {
                     case 73: document.execCommand('italics'); break;
                     case 79: document.execCommand('insertOrderedList'); break;
                     case 85: document.execCommand('insertUnorderedList'); break;
+                        /*
                     case 187: 
                         debugger;
                         var selection = window.getSelection();
@@ -76,12 +80,12 @@ define(function (require) {
                             rangy.createRange().selectNode(this.select('editableSelector')[0]).surroundContents(document.createElement('big'))
                         }
                         break;
+                        */
 
                     default: handled = false;
                 }
 
                 if (handled) {
-                    console.log('preventing')
                     event.preventDefault();
                     event.stopPropagation();
                 }
@@ -92,7 +96,6 @@ define(function (require) {
 
                 this.attr.element.value = $target.html();
 
-                console.log(this.attr.element);
                 this.trigger('updateElement', { element: this.attr.element });
             }
         };

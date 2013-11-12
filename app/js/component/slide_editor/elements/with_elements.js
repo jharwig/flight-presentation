@@ -21,7 +21,15 @@ define(function (require) {
     });
 
     this.after('initialize', function () {
-        if (!this.attr.element.id) {
+        if (this.attr.element.id) {
+            var m = this.attr.element.id.match(/(\d+)$/),
+                n = m && m.length === 2 && +m[1];
+
+            if (n) {
+                ID_INCREMENT = n + 1;
+            }
+
+        } else {
             var prefix = this.describe;
             if (prefix) {
                 prefix = prefix.replace(/[\s,]+/g, '').replace(/withElements/,'') + '_';
