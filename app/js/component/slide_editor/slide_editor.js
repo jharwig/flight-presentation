@@ -42,7 +42,7 @@ define(function (require) {
             this.on(document, 'selectSlide', this.onSelectSlide);
 
             if (this.attr.allowEditing) {
-                this.on(window, 'resize', this.onResize);
+                this.on(window, 'resize', _.debounce(this.onResize.bind(this), 250));
                 SlideEditorToolbar.attachTo(this.select('toolbarSelector'));
                 this.on('click', {
                     contentSelector: this.addElement
