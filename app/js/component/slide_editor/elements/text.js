@@ -15,13 +15,13 @@ define(function (require) {
      * Module exports
      */
 
-    return defineComponent(TextElement, withElements);
+    return defineComponent(Text, withElements);
 
     /**
      * Module function
      */
 
-    function TextElement() {
+    function Text() {
         this.defaultAttrs({
             editableSelector: '.editable'
         });
@@ -51,10 +51,10 @@ define(function (require) {
             var element = data.element;
 
             this.select('editableSelector').html(element.value)
-                .css({
-                    top: element.position.x * 100 + '%',
-                    left: element.position.y * 100 + '%'
-                });
+            this.$node.css({
+                left: element.position.x * 100 + '%',
+                top: element.position.y * 100 + '%'
+            });
         };
 
         this.onChange = function(event) {

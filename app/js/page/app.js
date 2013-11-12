@@ -47,7 +47,8 @@ define(function (require) {
             },
             Pane2: SlideEditor,
             pane2Options: {
-                slide: first
+                slide: first,
+                aspectRatio: 1.6
             }
         });
     }

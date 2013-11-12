@@ -39,6 +39,9 @@ define(function (require) {
             this.on('elementUpdated', this.onElementUpdated);
             this.on('updateElement', this.onUpdateElement);
             this.on('changeTool', this.onChangeTool);
+            this.on('dragenter', this.onDragEnter);
+            this.on('dragover', this.onDragOver);
+            this.on('drop', this.onDrop);
 
             if (this.attr.allowEditing) {
                 this.on(document, 'selectSlide', this.onSelectSlide);
@@ -53,6 +56,18 @@ define(function (require) {
             this.setSlide(this.attr.slide);
         });
 
+        this.onDragEnter = function(event) {
+            event.preventDefault();
+        };
+        this.onDragOver = function(event) {
+            event.preventDefault();
+        };
+        this.onDrop = function(event) {
+            var e = event.originalEvent || event;
+            console.log(e.clientX, e.clientY);
+            event.stopPropagation();
+        };
+
         this.setSlide = function(slide) {
             this.attr.slide = slide;
             this.$node.toggleClass('no-slide', !slide);
@@ -64,7 +79,15 @@ define(function (require) {
             var content = this.select('contentSelector'),
                 width = content.width(),
                 height = content.height(),
-                ratio = width / height
+                ratio = width / height;
+                
+
+            if (this.attr.aspectRatio) {
+                var desiredWidth = height * this.attr.aspectRatio;
+
+                content.width(desiredWidth);
+                ratio = this.attr.aspectRatio;
+            }
 
             this.trigger('updateSlideAspectRatio', { ratio:ratio, width:width, height:height });
         };
@@ -107,7 +130,7 @@ define(function (require) {
             } else {
                 require(['component/slide_editor/elements/' + element.elementType], function(Element) {
 
-                    var node = $('<div class="element"/>')
+                    var node = $('<div class="element" draggable="true"/>')
                         .css({
                             left: element.position.x * 100 + '%',
                             top: element.position.y * 100 + '%',

@@ -7,14 +7,16 @@ requirejs.config({
     'flight': 'bower_components/flight',
     'flight-storage': 'bower_components/flight-storage/lib',
     'component': 'js/component',
+    'highlight': 'bower_components/highlightjs/highlight.pack',
     'page': 'js/page',
     'text': 'bower_components/requirejs-text/text',
     'hogan': 'bower_components/requirejs-hogan-plugin/hogan',
     'tpl': 'bower_components/requirejs-hogan-plugin/hgn',
     'rangy': 'bower_components/rangy/rangy-core'
   },
-  shims: {
-    'rangy': { exports:'rangy' }
+  shim: {
+    'rangy': { exports:'rangy' },
+    'highlight': { exports: 'hljs' }
   }
 });
 

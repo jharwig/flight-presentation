@@ -32,17 +32,16 @@ define(function (require) {
         this.after('initialize', function () {
             this.$node.addClass('slide-list').html(template());
 
-            this.slides = this.attr.slides;
-            this.slides.forEach(this.addSlide.bind(this));
-
-            this.onUpdateSlideAspectRatio = _.debounce(this.onUpdateSlideAspectRatio.bind(this), 500);
-
             this.on(document, 'createSlide', this.onCreateSlide);
             this.on(document, 'updateSlide', this.onUpdateSlide);
             this.on(document, 'selectSlide', this.onSelectSlide);
             this.on(document, 'updateSlideAspectRatio', this.onUpdateSlideAspectRatio)
             this.on('updateSlideAspectRatio', this.onUpdateSlideAspectRatioInList)
             this.on('click', this.onClick);
+
+            this.slides = this.attr.slides;
+            this.slides.forEach(this.addSlide.bind(this));
+            this.onUpdateSlideAspectRatio = _.debounce(this.onUpdateSlideAspectRatio.bind(this), 500);
 
             if (this.slides.length) {
                 this.trigger('selectSlide', { index: 0, slide: this.slides[0] })

@@ -10,7 +10,8 @@
     "requirejs-text": "~2.0.10",
     "underscore": "~1.5.2",
     "rangy": "~1.2.3",
-    "flight-storage": "~0.1.0"
+    "flight-storage": "~0.1.0",
+    "highlightjs": "~7.3.0"
   },
   "devDependencies": {
     "jasmine-flight": "*",

@@ -7,8 +7,9 @@ define(function (require) {
    */
 
   var defineComponent = require('flight/lib/component');
-  var template = require('tpl!./text');
+  var template = require('tpl!./code');
   var withElements = require('./with_elements');
+  var highlight = require('highlight');
 
   /**
    * Module exports
@@ -33,7 +34,8 @@ define(function (require) {
           var field = this.select('editableSelector')
           .attr('disabled', true)
           .html(this.attr.element.value)
-          .on('change keyup', this.onChange.bind(this));
+          .on('change keyup', this.onChange.bind(this))
+          .on('change blur', this.updateHighlighting.bind(this));
 
           if (this.attr.allowEditing) {
               field.attr('disabled', false);
@@ -42,26 +44,39 @@ define(function (require) {
               field.focus();
               this.attr.element.editing = false;
           }
+
+          this.updateHighlighting = _.debounce(this.updateHighlighting.bind(this), 500, true);
+          this.updateHighlighting();
       });
 
       this.onElementUpdated = function(event, data) {
           event.stopPropagation();
 
-          var element = data.element;
+          this.attr.element = data.element;
 
-          this.select('editableSelector').html(element.value)
-          .css({
-              top: element.position.x * 100 + '%',
-              left: element.position.y * 100 + '%'
+          var p = data.element.position;
+
+          this.$node.css({
+              left: p.x * 100 + '%',
+              top: p.y * 100 + '%'
           });
+
+          this.updateHighlighting();
       };
 
       this.onChange = function(event) {
-          var $target = $(event.target);
-
-          this.attr.element.value = $target.html();
+          this.attr.element.value = this.select('editableSelector')[0].innerText;
 
           this.trigger('updateElement', { element: this.attr.element });
+      };
+
+      this.updateHighlighting = function() {
+          var code = this.select('editableSelector'),
+              text = code[0].innerText;
+
+          code.empty().text(this.attr.element.value);
+
+          highlight.highlightBlock(code[0]);
       };
   }
 
