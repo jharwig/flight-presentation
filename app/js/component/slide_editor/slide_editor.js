@@ -9,7 +9,6 @@ define(function (require) {
     var defineComponent = require('flight/lib/component');
     var template = require('tpl!./slide_editor');
     var SlideEditorToolbar = require('./slide_editor_toolbar');
-    var TextElement = require('./elements/text');
 
     /**
      * Module exports
@@ -25,32 +24,126 @@ define(function (require) {
         this.defaultAttrs({
             toolbarSelector: '.btn-toolbar',
             contentSelector: '.content',
+            noSlideSelector: '.no-slide',
             allowEditing: true
         });
 
         this.after('initialize', function () {
-            this.$node.html(template());
+            this.$node.addClass('slide-editor').html(template());
+
+            this.setSlide(this.attr.slide);
+            this.on('click', {
+                noSlideSelector: this.createSlide
+            });
+            this.on('slideUpdated', this.onSlideUpdated);
+            this.on('setSlide', this.setSlide);
+            this.on('elementUpdated', this.onElementUpdated);
+            this.on('updateElement', this.onUpdateElement);
+            this.on(document, 'selectSlide', this.onSelectSlide);
 
             if (this.attr.allowEditing) {
+                this.on(window, 'resize', this.onResize);
                 SlideEditorToolbar.attachTo(this.select('toolbarSelector'));
-                this.on('click', this.onClick);
+                this.on('click', {
+                    contentSelector: this.addElement
+                });
+                _.defer(this.onResize.bind(this));
             }
         });
 
-        this.onClick = function(event) {
+        this.setSlide = function(slide) {
+            this.attr.slide = slide;
+            this.$node.toggleClass('no-slide', !slide);
+        };
+
+        this.onResize = function(event) {
+            var content = this.select('contentSelector'),
+                width = content.width(),
+                height = content.height(),
+                ratio = width / height
+
+            this.trigger('updateSlideAspectRatio', { ratio:ratio, width:width, height:height });
+        };
+
+        this.onUpdateElement = function(event, data) {
+            if (!this.attr.slide.elements) {
+                this.attr.slide.elements = {};
+            }
+
+            this.attr.slide.elements[data.element.id] = data.element;
+            this.trigger('updateSlide', { slide:this.attr.slide });
+        };
+
+        this.onSetSlide = function(event, data) {
+            this.setSlide(data.slide);
+        };
+
+        this.onSlideUpdated = function(event, data) {
+            var self = this,
+                slide = this.attr.slide;
+            Object.keys(data.slide.elements).forEach(function(elementKey) {
+                self.trigger('elementUpdated', { element: data.slide.elements[elementKey] });
+            });
+        };
+
+        this.onElementUpdated = function(event, data) {
+            var self = this,
+                element = data.element,
+                elementNode = this.$node.find('.' + element.id);
+
+            console.log('finding', element.id, elementNode.length)
+
+            if (elementNode.length) { 
+                this.trigger(elementNode, 'elementUpdated', data);
+            } else {
+                console.log('element', element); 
+                require(['component/slide_editor/elements/' + element.elementType], function(Element) {
+
+                    console.log(element.position)
+
+                    var node = $('<div class="element"/>')
+                        .css({
+                            left: element.position.x * 100 + '%',
+                            top: element.position.y * 100 + '%',
+                        }).appendTo(self.select('contentSelector'));
+
+                    Element.attachTo(node, {
+                        allowEditing: self.attr.allowEditing,
+                        element: element
+                    });
+                });
+            }
+
+            event.stopPropagation();
+        };
+
+        this.onSelectSlide = function(event, data) {
+            this.setSlide(data.slide);
+        };
+
+        this.createSlide = function(event) {
+            this.trigger('createSlide');
+        };
+
+        this.addElement = function(event) {
             var content = this.select('contentSelector');
 
-            console.log(event.fromElement, event.toElement);
-
             if ($(event.target).is(content)) {
-                TextElement.attachTo(
-                    $('<div class="element"/>')
-                    .css({
-                        left: event.offsetX,
-                        top: event.offsetY
-                    })
-                    .appendTo(this.select('contentSelector'))
-                );
+                var parent = this.$node,
+                    parentWidth = parent.width(),
+                    parentHeight = parent.height();
+
+                this.trigger('elementUpdated', { 
+                    element: {
+                        elementType:'text',
+                        position: {
+                            x: event.offsetX / parentWidth,
+                            y: event.offsetY / parentHeight
+                        }
+                    }
+                });
+
+                this.onResize();
             }
         };
     }

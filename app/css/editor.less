@@ -1,0 +1,19 @@
+
+.content {
+  position: absolute;
+  width: 100%;
+  top: 5em; left: 0; bottom: 0;
+
+  background: #fafafa;
+}
+
+.no-slide {
+  position: absolute;
+  width: 100%;
+  display: none;
+}
+
+&.no-slide {
+  .content, .btn-toolbar { display:none; }
+  .no-slide { display:block; }
+}

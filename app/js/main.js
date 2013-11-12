@@ -9,7 +9,11 @@ requirejs.config({
     'page': 'js/page',
     'text': 'bower_components/requirejs-text/text',
     'hogan': 'bower_components/requirejs-hogan-plugin/hogan',
-    'tpl': 'bower_components/requirejs-hogan-plugin/hgn'
+    'tpl': 'bower_components/requirejs-hogan-plugin/hgn',
+    'rangy': 'bower_components/rangy/rangy-core'
+  },
+  shims: {
+    'rangy': { exports:'rangy' }
   }
 });
 
@@ -23,8 +27,10 @@ require(
   ],
 
   function(compose, registry, advice, withLogging, debug) {
-    debug.enable(true);
     compose.mixin(registry, [advice.withAdvice, withLogging]);
+
+    debug.enable(true);
+    DEBUG.events.logByAction('trigger');
 
     require(['page/app'], function(initializeApp) {
       initializeApp();
