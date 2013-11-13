@@ -53,7 +53,7 @@ define(function (require) {
                 this.on('click', {
                     contentSelector: this.addElement
                 });
-                _.defer(this.onResize.bind(this));
+                _.delay(this.onResize.bind(this), 1000);
             }
 
             DragAndDrop.attachTo(this.select('contentSelector'));
@@ -107,11 +107,11 @@ define(function (require) {
                 height = content.height(),
                 ratio = width / height;
                 
-
             if (this.attr.aspectRatio) {
                 var desiredWidth = height * this.attr.aspectRatio;
 
                 content.width(desiredWidth);
+                width = desiredWidth;
                 ratio = this.attr.aspectRatio;
             }
 
@@ -207,7 +207,6 @@ define(function (require) {
                     }
                 });
 
-                this.onResize();
                 this.currentTool = null;
             }
         };

@@ -32,16 +32,16 @@ define(function (require) {
             this.on('elementUpdated', this.onElementUpdated);
 
             var field = this.select('editableSelector')
-                .attr('disabled', true)
                 .html(this.attr.element.value)
                 .on('change keydown keyup', this.onChange.bind(this));
                 
             if (this.attr.allowEditing) {
-                field.attr('disabled', false);
-            }
-            if (this.attr.element.editing) {
-                field.focus();
-                this.attr.element.editing = false;
+                field.attr('contenteditable', true);
+
+                if (this.attr.element.editing) {
+                    field.focus();
+                    this.attr.element.editing = false;
+                }
             }
         });
 
