@@ -48,13 +48,10 @@ define(function (require) {
         this.onElementUpdated = function(event, data) {
             event.stopPropagation();
 
-            var element = data.element;
+            this.attr.element = data.element;
 
-            this.select('editableSelector').html(element.value)
-            this.$node.css({
-                left: element.position.x * 100 + '%',
-                top: element.position.y * 100 + '%'
-            });
+            this.reposition();
+            this.select('editableSelector').html(data.element.value)
         };
 
         this.onChange = function(event) {

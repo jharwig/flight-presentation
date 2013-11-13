@@ -32,14 +32,15 @@ define(function (require) {
           this.on('elementUpdated', this.onElementUpdated);
 
           var field = this.select('editableSelector')
-          .attr('disabled', true)
-          .html(this.attr.element.value)
-          .on('change keyup', this.onChange.bind(this))
-          .on('change blur', this.updateHighlighting.bind(this));
+              .attr('disabled', true)
+              .html(this.attr.element.value)
+              .on('change keyup', this.onChange.bind(this))
+              .on('change blur', this.updateHighlighting.bind(this));
 
           if (this.attr.allowEditing) {
               field.attr('disabled', false);
           }
+
           if (this.attr.element.editing) {
               field.focus();
               this.attr.element.editing = false;
@@ -54,13 +55,7 @@ define(function (require) {
 
           this.attr.element = data.element;
 
-          var p = data.element.position;
-
-          this.$node.css({
-              left: p.x * 100 + '%',
-              top: p.y * 100 + '%'
-          });
-
+          this.reposition();
           this.updateHighlighting();
       };
 

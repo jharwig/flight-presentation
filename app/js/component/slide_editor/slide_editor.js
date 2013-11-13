@@ -9,6 +9,7 @@ define(function (require) {
     var defineComponent = require('flight/lib/component');
     var template = require('tpl!./slide_editor');
     var SlideEditorToolbar = require('./slide_editor_toolbar');
+    var DragAndDrop = require('component/util/dnd');
 
     /**
      * Module exports
@@ -42,6 +43,8 @@ define(function (require) {
             this.on('dragenter', this.onDragEnter);
             this.on('dragover', this.onDragOver);
             this.on('drop', this.onDrop);
+            this.on('dnd-uploading', this.onFileUploading);
+            this.on('dnd-uploaded', this.onFileUploaded);
 
             if (this.attr.allowEditing) {
                 this.on(document, 'selectSlide', this.onSelectSlide);
@@ -53,8 +56,32 @@ define(function (require) {
                 _.defer(this.onResize.bind(this));
             }
 
+            DragAndDrop.attachTo(this.select('contentSelector'));
+
             this.setSlide(this.attr.slide);
         });
+
+        this.onFileUploading = function(event, data) {
+            this.uploadInfo = data;
+        };
+
+        this.onFileUploaded = function(event, data) {
+            var file = this.uploadInfo.file,
+                key = file.type + '-' + file.name;
+
+            this.trigger('storage-save', {
+                key: key,
+                value: data.result
+            });
+
+            this.trigger('elementUpdated', { 
+                element: {
+                    elementType: 'image',
+                    value: key,
+                    position: this.uploadInfo.position
+                }
+            });
+        };
 
         this.onDragEnter = function(event) {
             event.preventDefault();
@@ -64,7 +91,6 @@ define(function (require) {
         };
         this.onDrop = function(event) {
             var e = event.originalEvent || event;
-            console.log(e.clientX, e.clientY);
             event.stopPropagation();
         };
 

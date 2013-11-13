@@ -1,6 +1,6 @@
 'use strict';
 
-describeComponent('component/text', function () {
+describeComponent('component/image', function () {
 
   // Initialize the component and attach it to the DOM
   beforeEach(function () {

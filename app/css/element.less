@@ -4,15 +4,26 @@
   position: absolute;
   min-width: 50px;
   min-height: 1em;
+  resize: both;
+  overflow: hidden;
   padding: 2px;
 
   &:focus, &:hover {
     border-color: black;
   }
+
+  &.image {
+    min-width: 100px;
+    min-height: 100px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
 }
 
 .viewing .element {
   cursor: default;
+  resize: none;
   &:focus, &:hover {
     cursor: default;
     border-color: transparent;

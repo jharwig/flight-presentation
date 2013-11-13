@@ -16,9 +16,6 @@ define(function (require) {
    */
 
   function withElements() {
-    this.defaultAttrs({
-
-    });
 
     this.after('initialize', function () {
         if (this.attr.element.id) {
@@ -40,6 +37,14 @@ define(function (require) {
         this.on('dragstart', this.onDragStart);
         this.on('dragend', this.onDragEnd);
     });
+
+    this.reposition = function() {
+        var p = this.attr.element.position;
+        this.$node.css({
+            left: p.x * 100 + '%',
+            top: p.y * 100 + '%'
+        });
+    };
 
     this.onDragEnd = function(event) {
         var e = event.originalEvent || event;

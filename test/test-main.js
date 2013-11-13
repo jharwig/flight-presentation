@@ -10,8 +10,19 @@ requirejs.config({
 
   paths: {
     'flight': 'app/bower_components/flight',
+    'flight-storage': 'app/bower_components/flight-storage/lib',
     'component': 'app/js/component',
-    'page': 'app/js/page'
+    'highlight': 'app/bower_components/highlightjs/highlight.pack',
+    'page': 'app/js/page',
+    'text': 'app/bower_components/requirejs-text/text',
+    'hogan': 'app/bower_components/requirejs-hogan-plugin/hogan',
+    'tpl': 'app/bower_components/requirejs-hogan-plugin/hgn',
+    'rangy': 'app/bower_components/rangy/rangy-core'
+  },
+
+  shim: {
+    'rangy': { exports:'rangy' },
+    'highlight': { exports: 'hljs' }
   },
 
   // ask Require.js to load these files (all our tests)

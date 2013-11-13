@@ -1,6 +1,6 @@
 'use strict';
 
-describeComponent('component/editor_toolbar', function () {
+describeComponent('component/slide_editor/slide_editor', function () {
 
   // Initialize the component and attach it to the DOM
   beforeEach(function () {

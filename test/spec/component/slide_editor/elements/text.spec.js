@@ -1,6 +1,6 @@
 'use strict';
 
-describeComponent('component/code', function () {
+describeComponent('component/slide_editor/elements/text', function () {
 
   // Initialize the component and attach it to the DOM
   beforeEach(function () {
