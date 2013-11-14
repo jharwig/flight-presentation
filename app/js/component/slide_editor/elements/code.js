@@ -30,17 +30,21 @@ define(function (require) {
           this.$node.html(template());
 
           this.on('elementUpdated', this.onElementUpdated);
+          this.on('sizeChanged', this.onSizeChanged);
+          this.on('changeEditing', this.onChangeEditing);
 
           var field = this.select('editableSelector')
               .html(this.attr.element.value)
               .on('change keyup', this.onChange.bind(this))
               .on('change blur', this.updateHighlighting.bind(this));
 
+          this.updateFontSize();
+
           if (this.attr.allowEditing) {
-              field.attr('contenteditable', true);
               if (this.attr.element.editing) {
-                  field.focus();
+                  this.trigger('changeEditing', { editing:true });
                   this.attr.element.editing = false;
+                  this.trigger('updateElement', { element:this.attr.element });
               }
           }
 
@@ -54,7 +58,27 @@ define(function (require) {
           this.attr.element = data.element;
 
           this.reposition();
+          this.updateFontSize();
           this.updateHighlighting();
+      };
+
+      this.updateFontSize = function(event, data) {
+          this.select('editableSelector')
+              .css('fontSize', (3 + this.attr.element.size) + 'em');
+      };
+
+      this.onSizeChanged = function(event, data) {
+          this.updateFontSize();
+      };
+
+      this.onChangeEditing = function(event, data) {
+          if (data.editing) {
+              this.select('editableSelector')
+                  .attr('contenteditable', true)
+                  .focus();
+          } else {
+              this.select('editableSelector').removeAttr('contenteditable');
+          }
       };
 
       this.onChange = function(event) {

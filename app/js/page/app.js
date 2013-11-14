@@ -36,9 +36,9 @@ define(function (require) {
             slides = localStorage.get('slides') || [],
             first = slides.length && slides[0];
 
-        console.log(slides.length);
-
-        $(document.body).append(template);
+        $(document.body)
+            .on('scroll', function(e) { this.scrollLeft = 0; this.scrollTop = 0;e.preventDefault(); e.stopPropagation(); return false; })
+            .append(template);
 
         Split.attachTo($('.split'), {
             Pane1: SlidesList,

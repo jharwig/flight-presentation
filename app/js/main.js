@@ -32,8 +32,8 @@ require(
   function(compose, registry, advice, withLogging, debug) {
     compose.mixin(registry, [advice.withAdvice, withLogging]);
 
-    debug.enable(true);
-    DEBUG.events.logByAction('trigger');
+    //debug.enable(true);
+    //DEBUG.events.logByAction('trigger');
     //DEBUG.events.logAll();
 
     require(['page/app'], function(initializeApp) {

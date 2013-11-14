@@ -4,12 +4,16 @@
   position: absolute;
   min-width: 50px;
   min-height: 1em;
-  resize: both;
   overflow: hidden;
-  padding: 2px;
+  color: #222;
 
   &:focus, &:hover {
-    border-color: black;
+    border-color: #ccc;
+  }
+
+  &.active {
+    resize: both;
+    border-color: rgba(0,109,158,0.4);
   }
 
   &.image {

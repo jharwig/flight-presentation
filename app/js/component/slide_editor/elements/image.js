@@ -33,22 +33,28 @@ define(function (require) {
             this.on('elementUpdated', this.onElementUpdated);
 
             this.setImageSrc();
+
+            //this.trigger('updateElement', { element:this.attr.element });
         });
 
         this.setImageSrc = function() {
+
+            if (this.imageSet) return;
+
             var field = this.$node, //select('editableSelector'),
                 storageKey = this.attr.element.value,
-                oldSrc = field.css('backgroundImage'),
                 dataUri = this.get(storageKey);
 
-            if (dataUri && oldSrc !== dataUri) {
-                var i = new Image();
+            if (dataUri) {
+                this.imageSet = true;
+                console.log('setting', this.node);
+
+                var i = new Image(), self = this;
                 i.onload = function() {
                     field.css({
-                        //width: i.naturalWidth,
-                        //height: i.naturalHeight,
                         backgroundImage: 'url("' + dataUri + '")'
                     });
+                    self.trigger('updateElement', { element: self.attr.element });
                 };
                 i.src = dataUri;
             }

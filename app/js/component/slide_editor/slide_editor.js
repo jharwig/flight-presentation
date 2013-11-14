@@ -25,6 +25,7 @@ define(function (require) {
         this.defaultAttrs({
             toolbarSelector: '.btn-toolbar',
             contentSelector: '.content',
+            elementSelector: '.element',
             noSlideSelector: '.no-slide',
             allowEditing: true
         });
@@ -33,9 +34,11 @@ define(function (require) {
             this.$node.addClass('slide-editor').html(template());
 
             this.on('click', {
-                noSlideSelector: this.createSlide
+                noSlideSelector: this.createSlide,
+                elementSelector: this.onElementClick
             });
             this.on('slideUpdated', this.onSlideUpdated);
+            this.on('removeElement', this.onRemoveElement);
             this.on('setSlide', this.onSetSlide);
             this.on('elementUpdated', this.onElementUpdated);
             this.on('updateElement', this.onUpdateElement);
@@ -53,7 +56,7 @@ define(function (require) {
                 this.on('click', {
                     contentSelector: this.addElement
                 });
-                _.delay(this.onResize.bind(this), 1000);
+                this.onResize();
             }
 
             DragAndDrop.attachTo(this.select('contentSelector'));
@@ -81,6 +84,7 @@ define(function (require) {
                     position: this.uploadInfo.position
                 }
             });
+            this.onResize();
         };
 
         this.onDragEnter = function(event) {
@@ -138,11 +142,21 @@ define(function (require) {
 
         this.updateElements = function() {
             var self = this,
-                slide = this.attr.slide;
+                slide = this.attr.slide,
+                toRemove = this.select('elementSelector');
 
             Object.keys(slide.elements || []).forEach(function(elementKey) {
+                toRemove = toRemove.not('.' + elementKey);
                 self.trigger('elementUpdated', { element: slide.elements[elementKey] });
             });
+
+            toRemove.remove();
+        };
+
+        this.onRemoveElement = function(event, data) {
+            delete this.attr.slide.elements[data.element.id]
+            this.trigger('updateSlide', { slide: this.attr.slide });
+            this.trigger('slideUpdated', { slide: this.attr.slide });
         };
 
         this.onElementUpdated = function(event, data) {
@@ -161,6 +175,10 @@ define(function (require) {
                             left: element.position.x * 100 + '%',
                             top: element.position.y * 100 + '%',
                         }).appendTo(self.select('contentSelector'));
+
+                    if (self.attr.allowEditing) {
+                        node.attr('tabindex', 1);
+                    }
 
                     Element.attachTo(node, {
                         allowEditing: self.attr.allowEditing,
@@ -184,14 +202,29 @@ define(function (require) {
             this.trigger('createSlide');
         };
 
+        this.onElementClick = function(event) {
+            if (!this.attr.allowEditing) return;
+
+            var $target = $(event.target),
+                elementNode = $target.closest('.element'),
+                elementId = elementNode.data('elementId'),
+                element = this.attr.slide.elements[elementId];
+
+            this.trigger('selectElement', { element:element });
+        };
+
         this.addElement = function(event) {
-            var content = this.select('contentSelector');
+            var $target = $(event.target),
+                content = this.select('contentSelector');
 
             if (!this.currentTool) {
+                if ($target.closest('.element').length === 0) {
+                    this.trigger('selectElement', {});
+                }
                 return;
             }
 
-            if ($(event.target).is(content)) {
+            if ($target.is(content)) {
                 var parent = this.$node,
                     parentWidth = parent.width(),
                     parentHeight = parent.height();
@@ -199,6 +232,7 @@ define(function (require) {
                 this.trigger('elementUpdated', { 
                     element: {
                         elementType: this.currentTool,
+                        value: 'Enter Text',
                         position: {
                             x: event.offsetX / parentWidth,
                             y: event.offsetY / parentHeight
@@ -208,6 +242,7 @@ define(function (require) {
                 });
 
                 this.currentTool = null;
+                this.onResize();
             }
         };
     }
