@@ -26,8 +26,19 @@ define(function (require) {
           editableSelector: '.editable'
       });
 
+      this.before('initialize', function(node, options) {
+          if (!options.element.value) {
+              options.element.value = 'Enter Code';
+          }
+
+          if (!options.element.align) {
+              options.element.align = 'center';
+          }
+      });
+
       this.after('initialize', function () {
           this.$node.html(template());
+
 
           this.on('elementUpdated', this.onElementUpdated);
           this.on('sizeChanged', this.onSizeChanged);

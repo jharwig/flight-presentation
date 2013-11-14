@@ -41,7 +41,7 @@ define(function (require) {
             var tools = this.select('textToolsSelector');
 
             if (data.element) {
-                if (data.element.elementType === 'text') {
+                if (data.element.elementType === 'text' || data.element.elementType === 'code') {
                     tools.find('button').each(function() {
                         var name = $(this).data('tool');
                         $(this).toggleClass('active', data.element.align === name);

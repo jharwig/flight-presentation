@@ -157,6 +157,7 @@ define(function (require) {
             delete this.attr.slide.elements[data.element.id]
             this.trigger('updateSlide', { slide: this.attr.slide });
             this.trigger('slideUpdated', { slide: this.attr.slide });
+            this.trigger('selectElement', {});
         };
 
         this.onElementUpdated = function(event, data) {
@@ -226,16 +227,16 @@ define(function (require) {
 
             if ($target.is(content)) {
                 var parent = this.$node,
+                    offset = parent.offset(),
                     parentWidth = parent.width(),
                     parentHeight = parent.height();
 
                 this.trigger('elementUpdated', { 
                     element: {
                         elementType: this.currentTool,
-                        value: 'Enter Text',
                         position: {
-                            x: event.offsetX / parentWidth,
-                            y: event.offsetY / parentHeight
+                            x: (event.offsetX - offset.left) / parentWidth,
+                            y: (event.offsetY - offset.top) / parentHeight
                         },
                         editing: true
                     }

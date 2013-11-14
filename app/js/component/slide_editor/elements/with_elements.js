@@ -35,17 +35,14 @@ define(function (require) {
             }
             element.id = (prefix || ID_PREFIX) + ID_INCREMENT++;
         }
+    });
+
+    this.after('initialize', function () {
+        var element = this.attr.element;
 
         if (!element.size) {
             element.size = 0;
         }
-
-        if (!element.align) {
-            element.align = 'left';
-        }
-    });
-
-    this.after('initialize', function () {
 
         this.$node.data('elementId', this.attr.element.id);
 
@@ -58,6 +55,7 @@ define(function (require) {
     });
 
     this.onKeyDown = function(event) {
+        if (this.$node.find('*[contenteditable=true]').length) return;
 
         if (event.which === 8 && !$(event.target).attr('contenteditable')) {
             this.trigger('removeElement', { element:this.attr.element });

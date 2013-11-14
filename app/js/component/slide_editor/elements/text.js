@@ -26,6 +26,16 @@ define(function (require) {
             editableSelector: '.editable'
         });
 
+        this.before('initialize', function(node, options) {
+            if (!options.element.value) {
+                options.element.value = 'Enter Text';
+            }
+
+            if (!options.element.align) {
+                options.element.align = 'left';
+            }
+        });
+
         this.after('initialize', function () {
             this.$node.html(template());
 
