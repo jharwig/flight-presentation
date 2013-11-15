@@ -38,6 +38,11 @@ define(function (require) {
 
         $(document.body)
             .on('scroll', function(e) { this.scrollLeft = 0; this.scrollTop = 0;e.preventDefault(); e.stopPropagation(); return false; })
+            .on('keydown', function(e) {
+                if (e.which === 8 && !$(e.target).is('input,textarea,*[contenteditable]')) {
+                    e.preventDefault();
+                }
+            })
             .append(template);
 
         Split.attachTo($('.split'), {
