@@ -10,12 +10,13 @@ define(function (require) {
     var template = require('tpl!./slide_editor');
     var SlideEditorToolbar = require('./slide_editor_toolbar');
     var DragAndDrop = require('component/util/dnd');
+    var withStorage = require('flight-storage/adapters/local-storage');
 
     /**
      * Module exports
      */
 
-    return defineComponent(SlideEditor);
+    return defineComponent(SlideEditor, withStorage);
 
     /**
      * Module function
@@ -25,6 +26,7 @@ define(function (require) {
         this.defaultAttrs({
             toolbarSelector: '.btn-toolbar',
             contentSelector: '.content',
+            scalingSelector: '.scaling',
             elementSelector: '.element',
             noSlideSelector: '.no-slide',
             allowEditing: true
@@ -59,6 +61,10 @@ define(function (require) {
                 this.onResize();
             }
 
+
+            this.setScaling = _.debounce(this.setScaling.bind(this), 100);
+            this.setScaling();
+
             DragAndDrop.attachTo(this.select('contentSelector'));
 
             this.setSlide(this.attr.slide);
@@ -67,6 +73,19 @@ define(function (require) {
         this.onFileUploading = function(event, data) {
             this.uploadInfo = data;
         };
+
+        this.setScaling = function() {
+            var scaling = this.select('scalingSelector'),
+                content = this.select('contentSelector'),
+                containerSize = this.get('containerSize'),
+                width = content.width();
+
+            if (containerSize) {
+                scaling.css('fontSize', width / containerSize * 100 + '%');
+            } else {
+                this.set('containerSize', width);
+            }
+        }
 
         this.onFileUploaded = function(event, data) {
             var file = this.uploadInfo.file,
@@ -101,7 +120,7 @@ define(function (require) {
         this.setSlide = function(slide) {
             this.attr.slide = slide;
             this.$node.toggleClass('no-slide', !slide);
-            this.select('contentSelector').empty();
+            this.select('scalingSelector').empty();
             this.updateElements();
         };
 
@@ -119,6 +138,7 @@ define(function (require) {
                 ratio = this.attr.aspectRatio;
             }
 
+            this.setScaling();
             this.trigger('updateSlideAspectRatio', { ratio:ratio, width:width, height:height });
         };
 
@@ -175,7 +195,7 @@ define(function (require) {
                         .css({
                             left: element.position.x * 100 + '%',
                             top: element.position.y * 100 + '%',
-                        }).appendTo(self.select('contentSelector'));
+                        }).appendTo(self.select('scalingSelector'));
 
                     if (self.attr.allowEditing) {
                         node.attr('tabindex', 1);
@@ -215,8 +235,7 @@ define(function (require) {
         };
 
         this.addElement = function(event) {
-            var $target = $(event.target),
-                content = this.select('contentSelector');
+            var $target = $(event.target);
 
             if (!this.currentTool) {
                 if ($target.closest('.element').length === 0) {
@@ -225,26 +244,24 @@ define(function (require) {
                 return;
             }
 
-            if ($target.is(content)) {
-                var parent = this.$node,
-                    offset = parent.offset(),
-                    parentWidth = parent.width(),
-                    parentHeight = parent.height();
+            var parent = this.$node,
+                offset = parent.offset(),
+                parentWidth = parent.width(),
+                parentHeight = parent.height();
 
-                this.trigger('elementUpdated', { 
-                    element: {
-                        elementType: this.currentTool,
-                        position: {
-                            x: (event.offsetX - offset.left) / parentWidth,
-                            y: (event.offsetY - offset.top) / parentHeight
-                        },
-                        editing: true
-                    }
-                });
+            this.trigger('elementUpdated', { 
+                element: {
+                    elementType: this.currentTool,
+                    position: {
+                        x: (event.offsetX - offset.left) / parentWidth,
+                        y: (event.offsetY - offset.top) / parentHeight
+                    },
+                    editing: true
+                }
+            });
 
-                this.currentTool = null;
-                this.onResize();
-            }
+            this.currentTool = null;
+            this.onResize();
         };
     }
 

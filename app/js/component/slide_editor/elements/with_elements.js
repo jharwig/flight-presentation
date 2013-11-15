@@ -112,8 +112,7 @@ define(function (require) {
         var parent = this.$node.offsetParent();
         var element = this.attr.element;
         
-        element.position.x += this.dragOffsetX / parent.width()
-        element.position.y += this.dragOffsetY / parent.height()
+        element.position = this.dragPosition;
 
         this.$node.css({
             opacity: 1.0,
@@ -143,20 +142,52 @@ define(function (require) {
         oe.dataTransfer.effectAllowed = 'move';
 
         this.$node.css('opacity', 0.5);
+
+        this._offsetParent = this.$node.offsetParent();
+        this._offsetParentOffset = this._offsetParent.offset();
+        this._offsetParentWidth = this._offsetParent.width();
+        this._offsetParentHeight = this._offsetParent.height();
+        this._offset = this.$node.position();
+
         return true;
     };
 
     this.onDrag = function(event) {
         var oe = event.originalEvent || event,
-        left = oe.pageX - this.startPageX,
-        top = oe.pageY - this.startPageY;
+            position = {
+                x: oe.pageX - this.startPageX,
+                y: oe.pageY - this.startPageY
+            };
 
-        this.dragOffsetX = left;
-        this.dragOffsetY = top;
+        this.snapPixelOffsets(position);
+        this.dragOffsetX = position.x;
+        this.dragOffsetY = position.y;
 
         this.$node.css({
-            transform: 'translate(' + left + 'px, ' + top + 'px)'
+            transform: 'translate(' + position.x + 'px, ' + position.y + 'px)'
         });
+    };
+
+    this.snapPixelOffsets = function(position) {
+        var percentPosition = {
+                x: (this._offset.left + position.x) / this._offsetParentWidth,
+                y: (this._offset.top + position.y) / this._offsetParentHeight
+            };
+
+        this.snapPercent(percentPosition);
+        this.dragPosition = {x:percentPosition.x,y:percentPosition.y};
+
+        position.x = percentPosition.x * this._offsetParentWidth - this._offset.left;
+        position.y = percentPosition.y * this._offsetParentHeight - this._offset.top;
+
+        return position;
+    };
+
+    this.snapPercent = function(position) {
+        var multiple = 0.05;
+            
+        position.x = Math.round(position.x/multiple)*multiple;
+        position.y = Math.round(position.y/multiple)*multiple;
     };
 
     this.after('initialize', function () {
