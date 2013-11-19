@@ -97,6 +97,7 @@ define(function (require) {
             } else handled = false;
 
             if (handled) {
+                event.stopPropagation();
                 event.preventDefault();
             }
         };
@@ -106,6 +107,8 @@ define(function (require) {
             var active = this.$node.find('.active');
             var index = active.index();
             var newIndex;
+
+            if ($(event.target).is('textarea,*[contenteditable]')) return;
 
             switch (event.which) {
                 case 38: // Up
