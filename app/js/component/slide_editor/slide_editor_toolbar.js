@@ -71,6 +71,7 @@ define(function (require) {
                         $(this).toggleClass('active', data.element.align === name || data.element.color === name);
                     });
                     tools.show();
+                    languages.hide();
 
                     if (data.element.elementType === 'code') {
                         languages.find('button').each(function() {

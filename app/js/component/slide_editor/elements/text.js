@@ -141,13 +141,12 @@ define(function (require) {
             if (sendChangeEvent) {
                 var $target = $(event.target);
 
-                if ((event.type === 'change' || event.type === 'blur') && $.trim($target.text()).length === 0) {
-                    $target.html('Enter Text');
-                }
-
                 this.attr.element.value = $target.html();
 
-                this.trigger('updateElement', { element: this.attr.element });
+                if ((event.type === 'change' || event.type === 'blur') && $.trim($target.text()).length === 0) {
+                    $target.html('Enter Text');
+                    this.trigger('updateElement', { element: this.attr.element });
+                }
             }
         };
     }

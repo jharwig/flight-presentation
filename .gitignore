@@ -1,0 +1,7 @@
+example-app
+.bowerrc
+.gitattributes
+.jshintrc
+.travis.yml
+app/bower_components
+node_modules
