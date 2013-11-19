@@ -66,6 +66,7 @@ define(function (require) {
             })
 
             this.on('keydown', this.onKeyDown);
+            this.on(document, 'keydown', this.onDocumentKeyDown);
         });
 
         this.onKeyDown = function(event) {
@@ -89,6 +90,31 @@ define(function (require) {
                     default: handled = false;
                 }
             } else handled = false;
+
+            if (handled) {
+                event.preventDefault();
+            }
+        };
+
+        this.onDocumentKeyDown = function(event) {
+            var handled = true;
+            var active = this.$node.find('.active');
+            var index = active.index();
+            var newIndex;
+
+            switch (event.which) {
+                case 38: // Up
+                    newIndex = Math.max(0, index -1)
+                    break;
+                case 40: // Down
+                    newIndex = Math.min(this.slides.length-1, index+1);
+                    break;
+                default: handled = false;
+            }
+
+            if (newIndex !== undefined) {
+                this.trigger('selectSlide', { index:newIndex, slide: this.slides[newIndex] });
+            }
 
             if (handled) {
                 event.preventDefault();
