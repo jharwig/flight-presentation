@@ -77,6 +77,8 @@ define(function (require) {
         this.onTogglePresenting = function(event, data) {
             var self = this;
 
+            this.presenting = data.presenting;
+
             if (data.presenting) {
                 var windowWidth = $(window).width(),
                     windowHeight = $(window).height(),
@@ -264,7 +266,13 @@ define(function (require) {
                 elementId = elementNode.data('elementId'),
                 element = this.attr.slide.elements[elementId];
 
-            this.trigger('selectElement', { element:element });
+            
+            if (this.presenting) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                this.trigger('selectElement', { element:element });
+            }
         };
 
         this.addElement = function(event) {

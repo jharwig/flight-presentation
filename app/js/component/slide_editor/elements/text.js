@@ -97,6 +97,7 @@ define(function (require) {
                 .css('textAlign', this.attr.element.align)
                 .css('fontSize', (5 + this.attr.element.size) + 'em');
             this.$node.toggleClass('color-light', this.attr.element.color === 'light');
+            this.$node.toggleClass('color-alternate', this.attr.element.color === 'alternate');
         };
 
         this.onSizeChanged = function(event, data) {

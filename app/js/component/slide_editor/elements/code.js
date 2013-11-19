@@ -34,6 +34,10 @@ define(function (require) {
           if (!options.element.align) {
               options.element.align = 'center';
           }
+
+          if (!options.element.language) {
+              options.element.language = 'javascript';
+          }
       });
 
       this.after('initialize', function () {
@@ -43,6 +47,7 @@ define(function (require) {
           this.on('elementUpdated', this.onElementUpdated);
           this.on('sizeChanged', this.onSizeChanged);
           this.on('changeEditing', this.onChangeEditing);
+          this.on(document, 'toolSelected', this.onToolSelected);
 
           var field = this.select('editableSelector')
               .html(this.attr.element.value)
@@ -63,6 +68,13 @@ define(function (require) {
           this.updateHighlighting();
       });
 
+      this.onToolSelected = function(event, data) {
+          if (data.element === this.attr.element) {
+              this.attr.element[data.key] = data.value;
+              this.trigger('updateElement', { element: this.attr.element });
+          }
+      };
+
       this.onElementUpdated = function(event, data) {
           event.stopPropagation();
 
@@ -75,6 +87,7 @@ define(function (require) {
 
       this.updateFontSize = function(event, data) {
           this.select('editableSelector')
+              .removeClass('javascript html').addClass(this.attr.element.language)
               .css('fontSize', (3 + this.attr.element.size) + 'em');
       };
 

@@ -23,7 +23,8 @@ define(function (require) {
     function editorToolbar() {
         this.defaultAttrs({
             toolSelector: '.tools',
-            textToolsSelector: '.align,.color',
+            textToolsSelector: '.align,.color,.language',
+            codeToolsSelector: '.language',
             saveToolsSelector: '.save'
         });
 
@@ -31,6 +32,7 @@ define(function (require) {
             this.$node.html(template());
 
             this.select('textToolsSelector').hide();
+            this.select('codeToolsSelector').hide();
 
             this.on('click', {
                 toolSelector: this.onToolClick,
@@ -60,6 +62,7 @@ define(function (require) {
 
         this.onSelectElement = function(event, data) {
             var tools = this.select('textToolsSelector');
+            var languages = this.select('codeToolsSelector');
 
             if (data.element) {
                 if (data.element.elementType === 'text' || data.element.elementType === 'code') {
@@ -68,10 +71,19 @@ define(function (require) {
                         $(this).toggleClass('active', data.element.align === name || data.element.color === name);
                     });
                     tools.show();
+
+                    if (data.element.elementType === 'code') {
+                        languages.find('button').each(function() {
+                            var name = $(this).data('tool');
+                            $(this).toggleClass('active', data.element.language === name);
+                        });
+                        languages.show();
+                    }
                 }
                 this.selectedElement = data.element;
             } else {
                 tools.hide();
+                languages.hide();
             }
         };
 
