@@ -41,7 +41,7 @@ define(function (require) {
             this.on('click', this.onClick);
 
             this.slides = this.attr.slides;
-            this.slides.forEach(this.addSlide.bind(this));
+            this.slides.forEach(function(s) { this.addSlide(s); }.bind(this));
             this.onUpdateSlideAspectRatio = _.debounce(this.onUpdateSlideAspectRatio.bind(this), 500);
 
             if (this.slides.length) {
@@ -86,6 +86,11 @@ define(function (require) {
                         var next = active.next('li');
                         if (next.length) active.insertAfter(next).focus();
                         break;
+
+                    case 73: // New Slide
+                        var newSlide = this.defaultSlide();
+                        this.slides.splice(index + 1, 0, newSlide);
+                        this.addSlide(newSlide, active);
 
                     default: handled = false;
                 }
@@ -167,6 +172,7 @@ define(function (require) {
                     height: data.height,
                     transform: 'scale(' + scale + ')'
                 });
+            this.previousRatio = data;
         };
 
         this.onSelectSlide = function(event, data) {
@@ -186,18 +192,29 @@ define(function (require) {
             });
         };
 
-        this.addSlide = function(slide) {
+        this.addSlide = function(slide, afterNode) {
             var idIncrement = slide.id.match(/(\d+)$/);
             if (idIncrement && idIncrement.length === 2) {
                 var number = +idIncrement[1];
                 increment = number + 1;
             }
             
-            $('<li tabindex=1>').addClass(slide.id + ' viewing').appendTo(this.select('listSelector'));
-            SlideEditor.attachTo(this.select('listItemSelector').last(), {
+            var li = $('<li tabindex=1>').addClass(slide.id + ' viewing');
+            if (afterNode) {
+                afterNode.after(li);
+                li = afterNode.next('li');
+            } else {
+                li.appendTo(this.select('listSelector'));
+            }
+
+            SlideEditor.attachTo(li, {
                 allowEditing: false,
                 slide: slide
             });
+
+            if (afterNode) {
+                this.trigger(document, 'updateSlideAspectRatio', this.previousRatio);
+            }
         };
 
         this.onUpdateSlide = function(event, data) {
@@ -220,8 +237,11 @@ define(function (require) {
         };
 
         this.defaultSlide = function(options) {
+            while($('.slide_' + increment).length > 0) {
+                increment++;
+            }
             return $.extend({
-                id: 'slide_' + increment++
+                id: 'slide_' + increment
             }, options || {});
         };
     }
