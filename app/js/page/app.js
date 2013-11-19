@@ -2,6 +2,8 @@ define(function (require) {
 
     'use strict';
 
+    var ASPECT_RATIO = 1.6;
+
     /**
      * Module dependencies
      */
@@ -45,15 +47,17 @@ define(function (require) {
             })
             .append(template);
 
+
         Split.attachTo($('.split'), {
             Pane1: SlidesList,
             pane1Options: {
-                slides: slides
+                slides: slides,
+                aspectRatio: ASPECT_RATIO
             },
             Pane2: SlideEditor,
             pane2Options: {
                 slide: first,
-                aspectRatio: 1.6
+                aspectRatio: ASPECT_RATIO
             }
         });
     }

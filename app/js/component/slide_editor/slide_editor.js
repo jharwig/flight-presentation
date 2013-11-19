@@ -51,6 +51,10 @@ define(function (require) {
             this.on('dnd-uploading', this.onFileUploading);
             this.on('dnd-uploaded', this.onFileUploaded);
 
+            if (this.$node.closest('.split-2').length) {
+                this.on(document, 'togglePresenting', this.onTogglePresenting);
+            }
+
             if (this.attr.allowEditing) {
                 this.on(document, 'selectSlide', this.onSelectSlide);
                 this.on(window, 'resize', _.debounce(this.onResize.bind(this), 250));
@@ -69,6 +73,32 @@ define(function (require) {
 
             this.setSlide(this.attr.slide);
         });
+
+        this.onTogglePresenting = function(event, data) {
+            var self = this;
+
+            if (data.presenting) {
+                var windowWidth = $(window).width(),
+                    windowHeight = $(window).height(),
+                    ratioScreen = windowWidth / windowHeight,
+                    ratioSlide = this.attr.aspectRatio,
+                    dim = ratioScreen > ratioSlide ? 
+                        [windowHeight * ratioSlide, windowHeight] : 
+                        [windowWidth, windowWidth / ratioSlide];
+
+                this.select('contentSelector').css({
+                    marginLeft: (dim[0] / -2) + 'px',
+                    width:  dim[0] + 'px'
+                });
+            } else {
+                this.select('contentSelector').css('marginLeft', 0);
+                $(document.body).on('webkitTransitionEnd', function() {
+                    _.defer(function() {
+                        self.onResize();
+                    });
+                });
+            }
+        };
 
         this.onFileUploading = function(event, data) {
             this.uploadInfo = data;
@@ -240,7 +270,6 @@ define(function (require) {
         this.addElement = function(event) {
             var $target = $(event.target);
 
-            debugger;
             if (!this.currentTool) {
                 if ($target.closest('.element').length === 0) {
                     this.trigger('selectElement', {});

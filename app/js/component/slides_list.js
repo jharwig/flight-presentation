@@ -48,11 +48,19 @@ define(function (require) {
                 this.trigger('selectSlide', { index: 0, slide: this.slides[0] });
             }
 
+            var self = this;
             _.defer(function() {
-                $(document.body).addClass('animations')
+                $(document.body)
                     .on('keydown', function(e) {
                         if (e.which === 80 && !$(e.target).is('input,textarea,*[contenteditable]')) {
-                            $(this).toggleClass('presentation');
+                            $(this)
+                                .addClass('animations')
+                                .on('webkitTransitionEnd', function() {
+                                    $(this).removeClass('animations');
+                                });
+
+                            var presenting = $(this).toggleClass('presentation').hasClass('presentation');
+                            self.trigger('togglePresenting', { presenting:presenting });
                         }
                     });
             })
