@@ -1,10 +1,27 @@
 <div class="btn-group tools">
   <button type="button" data-tool="text" class="btn btn-default"><span class="glyphicon glyphicon-font"></span></button>
   <button type="button" data-tool="code" class="btn btn-default"><span class="glyphicon glyphicon-copyright-mark"></span></button>
+
+  <div class="btn-group">
+    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+      <span class="glyphicon glyphicon-picture"> <span class="caret"></span></span>
+    </button>
+    <ul class="dropdown-menu images">
+    </ul>
+  </div>
 </div>
 
-<div class="btn-group align">
+<div class="btn-group align" data-key="align">
   <button type="button" data-tool="left" class="btn btn-default"><span class="glyphicon glyphicon-align-left"></span></button>
   <button type="button" data-tool="center" class="btn btn-default"><span class="glyphicon glyphicon-align-center"></span></button>
   <button type="button" data-tool="right" class="btn btn-default"><span class="glyphicon glyphicon-align-right"></span></button>
+</div>
+
+<div class="btn-group color" data-key="color">
+  <button type="button" data-tool="dark" class="btn btn-default">Dark</button>
+  <button type="button" data-tool="light" class="btn btn-default">Light</button>
+</div>
+
+<div class="btn-group save" style="float:right">
+  <button type="button" data-tool="save" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span></button>
 </div>

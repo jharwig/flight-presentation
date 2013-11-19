@@ -149,6 +149,7 @@ define(function (require) {
 
             this.attr.slide.elements[data.element.id] = data.element;
             this.trigger('updateSlide', { slide:this.attr.slide });
+            this.trigger('slideUpdated', { slide: this.attr.slide });
         };
 
         this.onSetSlide = function(event, data) {
@@ -191,7 +192,7 @@ define(function (require) {
             } else {
                 require(['component/slide_editor/elements/' + element.elementType], function(Element) {
 
-                    var node = $('<div class="element" draggable="true"/>')
+                    var node = $('<div class="element" ' + (self.attr.allowEditing ? ('draggable="true"') : '') + '"/>')
                         .css({
                             left: element.position.x * 100 + '%',
                             top: element.position.y * 100 + '%',
@@ -203,7 +204,8 @@ define(function (require) {
 
                     Element.attachTo(node, {
                         allowEditing: self.attr.allowEditing,
-                        element: element
+                        element: element,
+                        toolOptions: data.toolOptions
                     });
                 });
             }
@@ -217,6 +219,7 @@ define(function (require) {
 
         this.onChangeTool = function(event, data) {
             this.currentTool = data.tool;
+            this.currentToolOptions = data.toolOptions || {};
         };
 
         this.createSlide = function(event) {
@@ -237,6 +240,7 @@ define(function (require) {
         this.addElement = function(event) {
             var $target = $(event.target);
 
+            debugger;
             if (!this.currentTool) {
                 if ($target.closest('.element').length === 0) {
                     this.trigger('selectElement', {});
@@ -257,7 +261,8 @@ define(function (require) {
                         y: (event.offsetY - offset.top) / parentHeight
                     },
                     editing: true
-                }
+                },
+                toolOptions: this.currentToolOptions
             });
 
             this.currentTool = null;

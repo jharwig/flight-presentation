@@ -95,6 +95,7 @@ define(function (require) {
       this.onChange = function(event) {
           this.attr.element.value = this.select('editableSelector')[0].innerText;
 
+          if (event.type === 'change')
           this.trigger('updateElement', { element: this.attr.element });
       };
 

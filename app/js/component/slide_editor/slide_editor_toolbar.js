@@ -8,12 +8,13 @@ define(function (require) {
 
     var defineComponent = require('flight/lib/component');
     var template = require('tpl!./slide_editor_toolbar');
+    var withStorage = require('flight-storage/adapters/local-storage');
 
     /**
      * Module exports
      */
 
-    return defineComponent(editorToolbar);
+    return defineComponent(editorToolbar, withStorage);
 
     /**
      * Module function
@@ -22,7 +23,8 @@ define(function (require) {
     function editorToolbar() {
         this.defaultAttrs({
             toolSelector: '.tools',
-            textToolsSelector: '.align'
+            textToolsSelector: '.align,.color',
+            saveToolsSelector: '.save'
         });
 
         this.after('initialize', function () {
@@ -35,7 +37,26 @@ define(function (require) {
                 textToolsSelector: this.onTextToolClick
             })
             this.on(document, 'selectElement', this.onSelectElement);
+
+            this.select('saveToolsSelector').find('button')
+                .attr('draggable', true)
+                .on('dragstart', this.onSaveDragStart.bind(this));
+
+
+            this.loadImages();
         });
+
+        this.loadImages = function() {
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (/^image\//.test(key)) {
+                    var displayName = key.substring(key.indexOf('-') + 1);
+                    key.substring(key.indexOf('-') + 1)
+                    this.$node.find('ul.images').append($('<li><a tabindex="-1" href="#">' + displayName + '</a></li>').data('key', key));
+                }
+            }
+        };
+
 
         this.onSelectElement = function(event, data) {
             var tools = this.select('textToolsSelector');
@@ -44,22 +65,30 @@ define(function (require) {
                 if (data.element.elementType === 'text' || data.element.elementType === 'code') {
                     tools.find('button').each(function() {
                         var name = $(this).data('tool');
-                        $(this).toggleClass('active', data.element.align === name);
+                        $(this).toggleClass('active', data.element.align === name || data.element.color === name);
                     });
                     tools.show();
                 }
+                this.selectedElement = data.element;
             } else {
                 tools.hide();
             }
+        };
+
+        this.onSaveDragStart = function(event) {
+            var oe = event.originalEvent || event;
+
+            oe.dataTransfer.setData('text/plain', JSON.stringify(this.get('slides')));
         };
 
         this.onTextToolClick = function(event) {
             this.select('textToolsSelector').find('.active').removeClass('active');
 
             var tool = $(event.target).closest('button')
-                .addClass('active')
-                .data('tool');
-            this.trigger('toolSelected', { key:'align', value:tool });
+                    .addClass('active')
+                    .data('tool'),
+                name = $(event.target).closest('.btn-group').data('key');
+            this.trigger('toolSelected', { key:name, value:tool, element:this.selectedElement });
         };
 
         this.onToolClick = function(event) {
@@ -68,7 +97,15 @@ define(function (require) {
                 toolName = button.data('tool');
 
             if (toolName) {
-                this.trigger('changeTool', { tool:toolName });
+                if (toolName === 'image') {
+
+
+                } else this.trigger('changeTool', { tool:toolName });
+            } else {
+                var key = $(event.target).closest('li').data('key');
+                if (key) {
+                    this.trigger('changeTool', { tool:'image', toolOptions: {key:key} });
+                }
             }
         }
     }

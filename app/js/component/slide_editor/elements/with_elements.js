@@ -47,9 +47,12 @@ define(function (require) {
         this.$node.data('elementId', this.attr.element.id);
 
         this.on('keydown', this.onKeyDown);
-        this.on('dragstart', this.onDragStart);
-        this.on('dragend', this.onDragEnd);
-        this.on('drag', this.onDrag);
+
+        if (this.attr.allowEditing) {
+            this.on('dragstart', this.onDragStart);
+            this.on('dragend', this.onDragEnd);
+            this.on('drag', this.onDrag);
+        }
 
         this.on(document, 'selectElement', this.onSelectElement);
     });
@@ -136,6 +139,7 @@ define(function (require) {
         this.dragImage = $('<div/>').css({
             width:'10px',
             height: '10px',
+            marginLeft: '-9999px',
             background: 'transparent'
         }).appendTo(document.body);
         oe.dataTransfer.setDragImage(this.dragImage[0], 10, 10);

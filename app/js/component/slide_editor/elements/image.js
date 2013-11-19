@@ -79,8 +79,14 @@ define(function (require) {
             if (this.imageSet) return;
 
             var field = this.$node, //select('editableSelector'),
-                storageKey = this.attr.element.value,
-                dataUri = this.get(storageKey);
+                storageKey = this.attr.element.value;
+
+            if (!storageKey && this.attr.toolOptions) {
+                storageKey = this.attr.element.value = this.attr.toolOptions.key;
+            }
+
+            var dataUri = this.get(storageKey);
+
 
             if (dataUri) {
                 this.imageSet = true;

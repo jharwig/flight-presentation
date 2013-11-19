@@ -1,12 +1,12 @@
 @import "../bower_components/bootstrap/less/bootstrap";
+@import "./element.less";
 
-.split { @import "split"; }
+.split { @import "./split"; }
 .slide-editor { 
-  @import "editor"; 
+  @import "./editor"; 
 }
-.slide-list { @import "list"; }
+.slide-list { @import "./list"; }
 
-@import "element";
 
 html {
   height: 100%;
@@ -17,6 +17,32 @@ html {
     height: 100%;
     overflow: hidden;
     font-family: Myriad Pro;
+  }
+}
+
+.animations {
+  @duration: 0.5s;
+  @func: ease-in-out;
+
+  .split-2.slide-editor .content { -webkit-transition: all @duration @func; }
+  &.presentation .split-2 .content {
+      top: 0;
+      bottom: 0;
+      margin-left: -382px;
+      left: 50%;
+  }
+  .slide-list { -webkit-transition: left @duration @func; }
+  &.presentation .slide-list {
+      left: -130px;
+  }
+  .split-2.slide-editor { -webkit-transition: all @duration @func; }
+  &.presentation .split-2.slide-editor {
+      left: 0;
+      background: white;
+  }
+  .btn-toolbar { -webkit-transition: margin-top @duration @func; }
+  &.presentation .btn-toolbar {
+    margin-top: -4em;
   }
 }
 

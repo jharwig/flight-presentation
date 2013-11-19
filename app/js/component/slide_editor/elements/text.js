@@ -34,6 +34,10 @@ define(function (require) {
             if (!options.element.align) {
                 options.element.align = 'left';
             }
+
+            if (!options.element.color) {
+                options.element.color = 'dark';
+            }
         });
 
         this.after('initialize', function () {
@@ -62,8 +66,10 @@ define(function (require) {
         });
 
         this.onToolSelected = function(event, data) {
-            this.attr.element[data.key] = data.value;
-            this.trigger('updateElement', { element: this.attr.element });
+            if (data.element === this.attr.element) {
+                this.attr.element[data.key] = data.value;
+                this.trigger('updateElement', { element: this.attr.element });
+            }
         };
 
         this.onChangeEditing = function(event, data) {
@@ -88,7 +94,9 @@ define(function (require) {
 
         this.updateFontSize = function(event, data) {
             this.select('editableSelector')
+                .css('textAlign', this.attr.element.align)
                 .css('fontSize', (5 + this.attr.element.size) + 'em');
+            this.$node.toggleClass('color-light', this.attr.element.color === 'light');
         };
 
         this.onSizeChanged = function(event, data) {

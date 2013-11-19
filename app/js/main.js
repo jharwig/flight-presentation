@@ -35,6 +35,8 @@ require(
     //debug.enable(true);
     //DEBUG.events.logByAction('trigger');
     //DEBUG.events.logAll();
+    
+
 
     require(['page/app'], function(initializeApp) {
       initializeApp();

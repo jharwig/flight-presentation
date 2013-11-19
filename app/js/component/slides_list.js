@@ -26,7 +26,8 @@ define(function (require) {
 
         this.defaultAttrs({
             slides:[],
-            listSelector: 'ol'
+            listSelector: 'ol',
+            listItemSelector: 'li'
         });
 
         this.after('initialize', function () {
@@ -44,9 +45,47 @@ define(function (require) {
             this.onUpdateSlideAspectRatio = _.debounce(this.onUpdateSlideAspectRatio.bind(this), 500);
 
             if (this.slides.length) {
-                this.trigger('selectSlide', { index: 0, slide: this.slides[0] })
+                this.trigger('selectSlide', { index: 0, slide: this.slides[0] });
             }
+
+            _.defer(function() {
+                $(document.body).addClass('animations')
+                    .on('keydown', function(e) {
+                        if (e.which === 80 && !$(e.target).is('input,textarea,*[contenteditable]')) {
+                            $(this).toggleClass('presentation');
+                        }
+                    });
+            })
+
+            this.on('keydown', this.onKeyDown);
         });
+
+        this.onKeyDown = function(event) {
+            var handled = true;
+            var active = this.$node.find('.active');
+            var index = active.index();
+
+            if (event.altKey) {
+                switch (event.which) {
+                    case 38: // Up
+                        this.move(index, Math.max(0, index-1));
+                        var prev = active.prev('li');
+                        if (prev.length) active.insertBefore(prev).focus();
+                        break;
+                    case 40: // Down
+                        this.move(index, Math.min(this.slides.length-1, index+2));
+                        var next = active.next('li');
+                        if (next.length) active.insertAfter(next).focus();
+                        break;
+
+                    default: handled = false;
+                }
+            } else handled = false;
+
+            if (handled) {
+                event.preventDefault();
+            }
+        };
 
         this.onClick = function(event) {
             var $target = $(event.target),
@@ -61,6 +100,22 @@ define(function (require) {
                 this.trigger('createSlide');
             }
         };
+
+        this.move = function(index, toIndex) {
+            //    Array.prototype.move = function (index, howMany, toIndex) {
+            var array = this.slides,
+                howMany = 1,
+                index = parseInt(index) || 0,
+                index = index < 0 ? array.length + index : index,
+                toIndex = parseInt(toIndex) || 0,
+                toIndex = toIndex < 0 ? array.length + toIndex : toIndex,
+                toIndex = toIndex <= index ? toIndex : toIndex <= index + howMany ? index : toIndex - howMany,
+                moved;
+     
+            array.splice.apply(array, [toIndex, 0].concat(moved = array.splice(index, howMany)));
+
+            this.set('slides', array);
+        }
 
         this.onUpdateSlideAspectRatioInList = function(event) { 
             event.stopPropagation(); 
@@ -84,7 +139,7 @@ define(function (require) {
             var list = this.select('listSelector');
             
             list.find('.active').removeClass('active')
-            list.find('.slide-editor').eq(data.index).addClass('active');
+            list.find('.slide-editor').eq(data.index).addClass('active').attr('draggable', true);
         };
 
         this.onCreateSlide = function(event, data) {
@@ -103,7 +158,9 @@ define(function (require) {
                 var number = +idIncrement[1];
                 increment = number + 1;
             }
-            SlideEditor.attachTo($('<li>').addClass(slide.id + ' viewing').appendTo(this.select('listSelector')), {
+            
+            $('<li tabindex=1>').addClass(slide.id + ' viewing').appendTo(this.select('listSelector'));
+            SlideEditor.attachTo(this.select('listItemSelector').last(), {
                 allowEditing: false,
                 slide: slide
             });

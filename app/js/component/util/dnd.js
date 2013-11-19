@@ -51,6 +51,7 @@ define(function (require) {
             if (files.length) {
                 var file = files[0];
 
+                debugger;
                 if (/^image/.test(file.type)) {
                     var offset = this.$node.offset(),
                         width = this.$node.width,
