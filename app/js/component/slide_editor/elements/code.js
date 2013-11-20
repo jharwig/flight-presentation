@@ -86,8 +86,12 @@ define(function (require) {
       };
 
       this.updateFontSize = function(event, data) {
+          if (this.attr.element.language === 'html') {
+              this.attr.element.language = 'xml';
+          }
+
           this.select('editableSelector')
-              .removeClass('javascript html').addClass(this.attr.element.language)
+              .removeClass('javascript html xml').addClass(this.attr.element.language)
               .css('fontSize', (3 + this.attr.element.size) + 'em');
       };
 
