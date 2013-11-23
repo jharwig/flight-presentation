@@ -1,22 +1,20 @@
 {
   "name": "flight-presentation",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "dependencies": {
-    "flight": "~1.1.0",
-    "requirejs": "~2.1.5",
-    "bootstrap": "~3.0.0",
-    "less.js": "~1.4.2",
-    "requirejs-hogan-plugin": "~0.3.1",
-    "requirejs-text": "~2.0.10",
-    "underscore": "~1.5.2",
-    "rangy": "~1.2.3",
-    "flight-storage": "~0.1.0",
-    "highlightjs": "~7.3.0",
-    "videojs": "~4.3.0"
+    "flight": "~1.1.1",
+    "flight-storage": "git://github.com/jharwig/flight-storage.git#master",
+    "requirejs": "latest",
+    "bootstrap": "latest",
+    "less.js": "latest",
+    "requirejs-hogan-plugin": "latest",
+    "requirejs-text": "latest",
+    "underscore": "latest",
+    "rangy": "latest",
+    "highlightjs": "latest"
   },
   "devDependencies": {
     "jasmine-flight": "*",
-    "jasmine-jquery": "*",
-    "karma-phantomjs-launcher": "*"
+    "jasmine-jquery": "*"
   }
 }
