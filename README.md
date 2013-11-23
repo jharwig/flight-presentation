@@ -1,8 +1,6 @@
 # flight-presentation
 
-A Twitter Flight presentation application with built in "Twitter Flight Presentation," stored in local storage.
-
-_Chrome is required_
+A Twitter Flight presentation application with built in "Twitter Flight Presentation," stored in local storage.  _Chrome is required_
 
     npm install
     bower install
@@ -11,9 +9,9 @@ _Chrome is required_
 
 Keyboard Commands
 
-P: Start Presentation
-Arrows: Next/Previous Slide
-Option+Up/Down: Reorder slide
-+/-: Change size of elements
+    P              : Start Presentation
+    Arrows         : Next/Previous Slide
+    Option+Up/Down : Reorder slide
+    +/-            : Change size of elements
 
-Drop png/svg onto slide to add
+    Drop png/svg onto slide to add

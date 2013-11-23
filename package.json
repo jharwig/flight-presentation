@@ -1,6 +1,7 @@
 {
   "name": "flight-presentation",
   "version": "0.0.0",
+  "repository": "git://github.com/jharwig/flight-presentation",
   "devDependencies": {
     "generator-flight": "~0.5.2",
     "karma": "~0.10.0",
