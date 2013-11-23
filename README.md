@@ -16,3 +16,5 @@ Keyboard Commands
     +/-            : Change size of elements
 
     Drop png/svg onto slide to add
+
+![Preview](https://raw.github.com/jharwig/flight-presentation/master/preview.png)
