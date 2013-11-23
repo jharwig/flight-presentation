@@ -1,10 +1,19 @@
-# flight-flight-presentation
+# flight-presentation
 
-## Contributing to this project
+A Twitter Flight presentation application with built in "Twitter Flight Presentation," stored in local storage.
 
-Anyone and everyone is welcome to contribute. Please take a moment to
-review the [guidelines for contributing](CONTRIBUTING.md).
+_Chrome is required_
 
-* [Bug reports](CONTRIBUTING.md#bugs)
-* [Feature requests](CONTRIBUTING.md#features)
-* [Pull requests](CONTRIBUTING.md#pull-requests)
+    npm install
+    bower install
+    cd app/
+    python -m SimpleHTTPServer 8888
+
+Keyboard Commands
+
+P: Start Presentation
+Arrows: Next/Previous Slide
+Option+Up/Down: Reorder slide
++/-: Change size of elements
+
+Drop png/svg onto slide to add

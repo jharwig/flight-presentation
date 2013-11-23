@@ -1,4 +1,5 @@
 @percent: 130px;
+@sidePadding: 40px;
 
 .split-1 {
     position: absolute;
@@ -16,3 +17,16 @@
 
     padding: 1em;
 }
+
+& > div {
+    background: white;
+}
+.split-1 {
+    left: @sidePadding;
+}
+.split-2 {
+    left: @percent + @sidePadding;
+    right: @sidePadding;
+}
+
+

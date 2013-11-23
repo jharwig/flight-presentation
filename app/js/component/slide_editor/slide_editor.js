@@ -222,24 +222,26 @@ define(function (require) {
             if (elementNode.length) { 
                 this.trigger(elementNode, 'elementUpdated', data);
             } else {
-                require(['component/slide_editor/elements/' + element.elementType], function(Element) {
+                if (element.elementType !== 'component') {
+                    require(['component/slide_editor/elements/' + element.elementType], function(Element) {
 
-                    var node = $('<div class="element" ' + (self.attr.allowEditing ? ('draggable="true"') : '') + '"/>')
-                        .css({
-                            left: element.position.x * 100 + '%',
-                            top: element.position.y * 100 + '%',
-                        }).appendTo(self.select('scalingSelector'));
+                        var node = $('<div class="element" ' + (self.attr.allowEditing ? ('draggable="true"') : '') + '"/>')
+                            .css({
+                                left: element.position.x * 100 + '%',
+                                top: element.position.y * 100 + '%',
+                            }).appendTo(self.select('scalingSelector'));
 
-                    if (self.attr.allowEditing) {
-                        node.attr('tabindex', 1);
-                    }
+                        if (self.attr.allowEditing) {
+                            node.attr('tabindex', 1);
+                        }
 
-                    Element.attachTo(node, {
-                        allowEditing: self.attr.allowEditing,
-                        element: element,
-                        toolOptions: data.toolOptions
+                        Element.attachTo(node, {
+                            allowEditing: self.attr.allowEditing,
+                            element: element,
+                            toolOptions: data.toolOptions
+                        });
                     });
-                });
+                }
             }
 
             event.stopPropagation();

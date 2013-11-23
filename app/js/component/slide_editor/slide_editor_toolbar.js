@@ -65,7 +65,7 @@ define(function (require) {
             var languages = this.select('codeToolsSelector');
 
             if (data.element) {
-                if (data.element.elementType === 'text' || data.element.elementType === 'code') {
+                if (data.element.elementType === 'text' || data.element.elementType === 'code' || data.element.elementType === 'logger') {
                     tools.find('button').each(function() {
                         var name = $(this).data('tool');
                         $(this).toggleClass('active', data.element.align === name || data.element.color === name);
@@ -91,7 +91,20 @@ define(function (require) {
         this.onSaveDragStart = function(event) {
             var oe = event.originalEvent || event;
 
-            oe.dataTransfer.setData('text/plain', JSON.stringify(this.get('slides')));
+            var exportJson = {
+                slides: this.get('slides'),
+                containerSize: this.get('containerSize')
+            };
+
+
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (/^image\//.test(key)) {
+                    exportJson[key] = this.get(key);
+                }
+            }
+
+            oe.dataTransfer.setData('text/plain', JSON.stringify(exportJson));
         };
 
         this.onTextToolClick = function(event) {
@@ -111,13 +124,17 @@ define(function (require) {
 
             if (toolName) {
                 if (toolName === 'image') {
-
-
                 } else this.trigger('changeTool', { tool:toolName });
             } else {
-                var key = $(event.target).closest('li').data('key');
+                var li = $(event.target).closest('li');
+                var key = li.data('key');
                 if (key) {
-                    this.trigger('changeTool', { tool:'image', toolOptions: {key:key} });
+                    return this.trigger('changeTool', { tool:'image', toolOptions: {key:key} });
+                }
+
+                var component = li.data('component');
+                if (component) {
+                    return this.trigger('changeTool', { tool:'comp', toolOptions: {name:component}});
                 }
             }
         }

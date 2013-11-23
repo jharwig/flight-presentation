@@ -6,6 +6,7 @@ requirejs.config({
   paths: {
     'flight': 'bower_components/flight',
     'flight-storage': 'bower_components/flight-storage/lib',
+    'videojs': 'bower_components/videojs/dist/viewo-js/video',
     'component': 'js/component',
     'highlight': 'bower_components/highlightjs/highlight.pack',
     'page': 'js/page',

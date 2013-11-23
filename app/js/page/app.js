@@ -3,11 +3,11 @@ define(function (require) {
     'use strict';
 
     var ASPECT_RATIO = 1.6;
+    var SLIDE_CONTENT = require('tpl!./slide_content');
 
     /**
      * Module dependencies
      */
-
     var Split = require('component/split');
     var template = require('tpl!./app');
     var SlidesList = require('component/slides_list');
@@ -35,8 +35,18 @@ define(function (require) {
         });
 
         var localStorage = new LocalStorageManager(),
-            slides = localStorage.get('slides') || [],
-            first = slides.length && slides[0];
+            slides = localStorage.get('slides');
+
+        if (!slides) {
+            var importJson = JSON.parse(SLIDE_CONTENT({}));
+            Object.keys(importJson).forEach(function(key) {
+                if (key === 'slides') {
+                    slides = importJson[key];
+                }
+                localStorage.set(key, importJson[key]);
+            });
+        }
+        var first = slides.length && slides[0];
 
         $(document.body)
             .on('scroll', function(e) { this.scrollLeft = 0; this.scrollTop = 0;e.preventDefault(); e.stopPropagation(); return false; })

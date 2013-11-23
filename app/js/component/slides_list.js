@@ -52,7 +52,7 @@ define(function (require) {
             _.defer(function() {
                 $(document.body)
                     .on('keydown', function(e) {
-                        if (e.which === 80 && !$(e.target).is('input,textarea,*[contenteditable]')) {
+                        if ((e.which === 80||e.which==66) && !$(e.target).is('input,textarea,*[contenteditable]')) {
                             $(this)
                                 .addClass('animations')
                                 .on('webkitTransitionEnd', function() {
@@ -60,6 +60,7 @@ define(function (require) {
                                 });
 
                             var presenting = $(this).toggleClass('presentation').hasClass('presentation');
+                            self.isPresenting = presenting;
                             self.trigger('togglePresenting', { presenting:presenting });
                         }
                     });
@@ -111,9 +112,13 @@ define(function (require) {
             if ($(event.target).is('textarea,*[contenteditable]')) return;
 
             switch (event.which) {
+
+                case 33:
                 case 38: // Up
                     newIndex = Math.max(0, index -1)
                     break;
+
+                case 34:
                 case 40: // Down
                     newIndex = Math.min(this.slides.length-1, index+1);
                     break;
@@ -133,7 +138,7 @@ define(function (require) {
             var $target = $(event.target),
                 listElement = $target.closest('.slide-editor');
             if (listElement.length) {
-                var index = this.select('listSelector').find('li').index(listElement);
+                var index = this.select('listSelector').children('li').index(listElement);
                 this.trigger('selectSlide', {
                     index: index,
                     slide: this.slides[index]
@@ -179,10 +184,25 @@ define(function (require) {
         };
 
         this.onSelectSlide = function(event, data) {
+            if (!data.slide) return;
+
             var list = this.select('listSelector');
+
+            list.find('.active').removeClass('active');
+            var newItem = list.find('.slide-editor').eq(data.index);
+
+
+            if (!this.isPresenting) {
+                var scroll = newItem.offsetParent();
+                var position = newItem.position();
+                if (position) {
+                    scroll.clearQueue().animate({
+                        scrollTop: Math.max(0, newItem.position().top + scroll.scrollTop() - 100)
+                    });
+                }
+            }
             
-            list.find('.active').removeClass('active')
-            list.find('.slide-editor').eq(data.index).addClass('active').attr('draggable', true);
+            newItem.addClass('active').attr('draggable', true);
         };
 
         this.onCreateSlide = function(event, data) {

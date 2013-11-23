@@ -64,12 +64,18 @@ define(function (require) {
             this.trigger('removeElement', { element:this.attr.element });
             stop();
         } else if (event.which === 189) {
-            this.attr.element.size--;
+            if (event.altKey) 
+                this.attr.element.size = this.attr.element.size - 0.5;
+            else
+                this.attr.element.size--;
             this.trigger('sizeChanged', { size:this.attr.element.size });
             this.trigger('updateElement', { element:this.attr.element });
             stop();
         } else if (event.which === 187) {
-            this.attr.element.size++;
+            if (event.altKey) 
+                this.attr.element.size = this.attr.element.size + 0.5;
+            else
+                this.attr.element.size++;
             this.trigger('sizeChanged', { size:this.attr.element.size });
             this.trigger('updateElement', { element:this.attr.element });
             stop();
