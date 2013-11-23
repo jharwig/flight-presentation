@@ -1,7 +1,15 @@
-example-app
+lib-cov
+*.seed
+*.log
+*.csv
 .bowerrc
-.gitattributes
 .jshintrc
 .travis.yml
+
+pids
+logs
+results
+npm-debug.log
 app/bower_components
 node_modules
+.gitattributes
