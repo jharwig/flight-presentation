@@ -10,6 +10,6 @@ pids
 logs
 results
 npm-debug.log
-app/bower_components
+bower_components
 node_modules
 .gitattributes
